@@ -18,7 +18,7 @@ export function usePublicCatalog() {
 
   useEffect(() => {
     if (!supabase) return
-    const channel = supabase.channel('public-catalog').on('postgres_changes', { event: '*', schema: 'public', table: 'properties' }, () => {
+    const channel = supabase.channel(`public-catalog-${crypto.randomUUID()}`).on('postgres_changes', { event: '*', schema: 'public', table: 'properties' }, () => {
       void queryClient.invalidateQueries({ queryKey: ['public-catalog'] })
     }).on('postgres_changes', { event: '*', schema: 'public', table: 'property_translations' }, () => {
       void queryClient.invalidateQueries({ queryKey: ['public-catalog'] })

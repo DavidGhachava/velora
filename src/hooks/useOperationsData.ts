@@ -23,7 +23,7 @@ export function useOperationsData() {
 
   useEffect(() => {
     if (!supabase) return
-    const channel = supabase.channel('operations-state').on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, () => {
+    const channel = supabase.channel(`operations-state-${crypto.randomUUID()}`).on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, () => {
       void queryClient.invalidateQueries({ queryKey: ['operations-state'] })
     }).on('postgres_changes', { event: '*', schema: 'public', table: 'rooms' }, () => {
       void queryClient.invalidateQueries({ queryKey: ['operations-state'] })
