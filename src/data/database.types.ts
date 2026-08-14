@@ -1190,6 +1190,10 @@ export type Database = {
         }
         Returns: string
       }
+      set_property_cover: {
+        Args: { p_media_id: string; p_property_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

@@ -1,4 +1,4 @@
-import { Archive, BedDouble, Edit3, Eye, Image, MapPin, Pause, Play, Trash2 } from 'lucide-react'
+import { Archive, BedDouble, Edit3, Image, MapPin, Pause, Play, Settings2, Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { ManagedProperty } from '../../domain/property'
 import { Button } from '../ui/Button'
@@ -25,7 +25,7 @@ export function PropertyList({ properties, busy, onEdit, onStatusChange, onDelet
         <div><dt>Type</dt><dd>{property.propertyType}</dd></div>
       </dl>
       <div className="property-list-card__actions">
-        {property.status === 'published' && <Link className="button button--quiet button--sm" to={`/hotels/${property.slug}`} target="_blank"><Eye size={15} /><span>View</span></Link>}
+        <Link className="button button--primary button--sm" to={`/ops/properties/${property.id}`}><Settings2 size={15} /><span>Manage</span></Link>
         <Button size="sm" variant="secondary" icon={<Edit3 size={15} />} onClick={() => onEdit(property)}>Edit</Button>
         {property.status === 'published'
           ? <Button size="sm" variant="quiet" disabled={busy} icon={<Pause size={15} />} onClick={() => onStatusChange(property, 'paused')}>Pause</Button>

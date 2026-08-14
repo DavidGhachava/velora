@@ -469,6 +469,47 @@ h3 { font-size: 1.05rem; }
 .translation-tabs button.active { background: white; color: var(--ink-900); font-weight: 750; box-shadow: 0 2px 8px #172a3110; }
 .property-editor__actions { position: sticky; bottom: 0; display: flex; justify-content: flex-end; gap: .6rem; padding: 1rem 1.5rem calc(1rem + env(safe-area-inset-bottom)); border-top: 1px solid #dfe4de; background: rgba(251,251,249,.96); backdrop-filter: blur(12px); }
 
+.property-workspace-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; margin-bottom: 1rem; }
+.property-workspace-summary > div { position: relative; min-width: 0; display: grid; gap: .22rem; padding: 1rem; border: 1px solid #dfe4de; border-radius: .65rem; background: white; }
+.property-workspace-summary > div > svg, .property-workspace-summary__count { position: absolute; top: 1rem; right: 1rem; color: var(--moss-600); }
+.property-workspace-summary__count { font-size: 1.15rem; font-weight: 750; }
+.property-workspace-summary span:not(.property-workspace-summary__count) { color: #777d78; font-size: .62rem; text-transform: uppercase; letter-spacing: .08em; }
+.property-workspace-summary strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 1.8rem; font-size: .82rem; }
+.property-workspace-summary small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #727873; font-size: .65rem; }
+.inventory-section { display: grid; gap: 1rem; margin-top: 1rem; padding: 1.25rem; border: 1px solid #dfe4de; border-radius: .75rem; background: white; box-shadow: 0 7px 24px #172a3106; }
+.inventory-section__header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+.inventory-section__header h2 { margin: 0 0 .25rem; font-family: inherit; font-size: 1.05rem; font-weight: 700; letter-spacing: -.015em; }
+.inventory-section__header p { max-width: 660px; margin: 0; color: #707671; font-size: .72rem; line-height: 1.5; }
+.inventory-section__header > span { flex: 0 0 auto; padding: .32rem .55rem; border-radius: 999px; background: #eef2ef; color: #59625c; font-size: .62rem; font-weight: 700; }
+.media-upload { display: grid; grid-template-columns: 1fr 1.2fr auto; align-items: end; gap: .8rem; padding: .85rem; border: 1px dashed #bcc8c0; border-radius: .65rem; background: #f7f9f6; }
+.media-upload__drop { position: relative; min-height: 88px; display: grid; grid-template-columns: auto 1fr; align-content: center; gap: .2rem .55rem; padding: .7rem; border-radius: .45rem; background: white; color: #3f4842; cursor: pointer; }
+.media-upload__drop svg { grid-row: 1 / span 2; align-self: center; color: var(--moss-600); }
+.media-upload__drop span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .72rem; font-weight: 700; }
+.media-upload__drop small { color: #7a817c; font-size: .58rem; }
+.media-upload__drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.media-upload > div { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.media-upload > div label, .media-admin-card__fields label { min-width: 0; display: grid; gap: .32rem; color: #59615c; font-size: .62rem; font-weight: 700; }
+.media-upload input:not([type='file']), .media-admin-card input { width: 100%; min-width: 0; min-height: 42px; padding: .6rem .65rem; border: 1px solid #d3d9d3; border-radius: .45rem; background: white; }
+.media-admin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.media-admin-card { min-width: 0; overflow: hidden; display: grid; grid-template-columns: 180px minmax(0, 1fr); border: 1px solid #dfe4de; border-radius: .65rem; background: #fbfcfa; }
+.media-admin-card__image { position: relative; min-height: 170px; background: #e8ece8; }
+.media-admin-card__image img { width: 100%; height: 100%; object-fit: cover; }
+.media-admin-card__image > span { position: absolute; left: .55rem; top: .55rem; display: flex; align-items: center; gap: .25rem; padding: .3rem .45rem; border-radius: 999px; background: #fff; color: var(--moss-700); font-size: .58rem; font-weight: 750; box-shadow: 0 4px 14px #07121622; }
+.media-admin-card__fields { display: grid; align-content: center; gap: .6rem; padding: .75rem; }
+.media-admin-card__actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: .35rem; padding: .55rem; border-top: 1px solid #e3e7e2; }
+.amenity-admin-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .6rem; }
+.amenity-admin-card { min-width: 0; overflow: hidden; border: 1px solid #dde2dc; border-radius: .6rem; background: #fafbf9; }
+.amenity-admin-card.is-selected { border-color: #9fb9aa; background: #f1f7f3; }
+.amenity-admin-card__select { width: 100%; min-height: 68px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .55rem; padding: .7rem; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.amenity-admin-card__select > span { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: #e9eeea; color: #68716b; }
+.amenity-admin-card.is-selected .amenity-admin-card__select > span { background: var(--moss-600); color: white; }
+.amenity-admin-card__select strong, .amenity-admin-card__select small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.amenity-admin-card__select strong { font-size: .7rem; }
+.amenity-admin-card__select small { margin-top: .18rem; color: #747b76; font-size: .58rem; }
+.amenity-admin-card__mode { display: grid; grid-template-columns: 1fr 1fr; gap: .25rem; padding: .35rem; border-top: 1px solid #d9e3dc; }
+.amenity-admin-card__mode button { min-height: 32px; display: flex; align-items: center; justify-content: center; gap: .25rem; border: 0; border-radius: .35rem; background: transparent; color: #717873; font-size: .58rem; cursor: pointer; }
+.amenity-admin-card__mode button.active { background: white; color: var(--moss-700); font-weight: 750; box-shadow: 0 2px 8px #172a3110; }
+
 .alert { border-radius: .35rem; display: flex; gap: .7rem; padding: .9rem; font-size: .8rem; }
 .alert p { margin: .2rem 0 0; line-height: 1.5; }
 .alert--error { background: #fff0ef; color: #772f2f; border: 1px solid #e8c4c1; }
@@ -656,6 +697,10 @@ h3 { font-size: 1.05rem; }
   .official-booking-card { position: static; }
   .property-list-card { grid-template-columns: minmax(280px, 1fr) auto; }
   .property-list-card__facts { grid-column: 1 / -1; grid-row: 2; }
+  .media-upload { grid-template-columns: 1fr 1fr; }
+  .media-upload .button { grid-column: 1 / -1; width: 100%; }
+  .media-admin-grid { grid-template-columns: 1fr; }
+  .amenity-admin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 767px) {
@@ -745,6 +790,12 @@ h3 { font-size: 1.05rem; }
   .property-form-grid--2, .property-form-grid--3 { grid-template-columns: 1fr; }
   .property-editor__actions { padding-inline: 1rem; }
   .property-editor__actions .button { flex: 1; }
+  .property-workspace-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .inventory-section { padding: 1rem; }
+  .media-upload { grid-template-columns: 1fr; }
+  .media-upload > div { grid-template-columns: 1fr; }
+  .media-upload .button { grid-column: auto; }
+  .amenity-admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ops-grid { grid-template-columns: 1fr; }
   .kpi-grid { grid-template-columns: 1fr 1fr; }
   .kpi-card strong { font-size: 1.4rem; }
@@ -787,7 +838,11 @@ h3 { font-size: 1.05rem; }
   .public-hero h1 { font-size: clamp(2.45rem, 12vw, 3.1rem); }
   .room-card__heading { flex-direction: column; }.price { text-align: left; }
   .kpi-grid { grid-template-columns: 1fr; }
-}
+  .property-workspace-summary, .amenity-admin-grid { grid-template-columns: 1fr; }
+  .media-admin-card { grid-template-columns: 1fr; }
+  .media-admin-card__image { min-height: 210px; }
+  .media-admin-card__actions { grid-column: auto; display: grid; grid-template-columns: 1fr; }
+  }
 
 @media (min-width: 768px) and (max-height: 700px) {
   .public-hero__content { padding-top: 5.5rem; padding-bottom: 1rem; gap: 1rem; }
