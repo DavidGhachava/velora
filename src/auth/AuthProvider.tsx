@@ -2,33 +2,116 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '../data/supabase'
 
-interface AuthUser { id: string; email: string; name: string; role: string }
-interface AuthContextValue { user: AuthUser | null; loading: boolean; signIn: (email: string, password: string) => Promise<void>; enterDemo: () => void; signOut: () => Promise<void> }
-const AuthContext = createContext<AuthContextValue | null>(null)
+interface AuthUser {
+  id: string
+  email: string
+  name: string
+  role: 'Owner'
+}
 
-const mapUser = (user: User): AuthUser => ({ id: user.id, email: user.email ?? 'staff@velorabatumi.example', name: user.user_metadata.full_name as string | undefined ?? 'Velora team member', role: 'Property manager' })
+interface OwnerProfile {
+  email: string
+  full_name: string
+  role: 'owner'
+  active: boolean
+}
+
+interface AuthContextValue {
+  user: AuthUser | null
+  loading: boolean
+  signIn: (email: string, password: string) => Promise<void>
+  enterDemo: () => void
+  signOut: () => Promise<void>
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null)
+const demoUser: AuthUser = {
+  id: 'demo-manager',
+  email: 'owner@velora.local',
+  name: 'Velora Owner',
+  role: 'Owner',
+}
+
+const getAuthorizedOwner = async (identity: User): Promise<AuthUser | null> => {
+  if (!supabase) return null
+
+  const { data, error } = await supabase
+    .from('app_users')
+    .select('email, full_name, role, active')
+    .eq('id', identity.id)
+    .maybeSingle<OwnerProfile>()
+
+  if (error || !data?.active || data.role !== 'owner') return null
+
+  return {
+    id: identity.id,
+    email: data.email || identity.email || '',
+    name: data.full_name,
+    role: 'Owner',
+  }
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(() => window.sessionStorage.getItem('velora-demo-auth') ? { id: 'demo-manager', email: 'alex@velorabatumi.example', name: 'Alex Morgan', role: 'Property manager' } : null)
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    if (supabase || !window.sessionStorage.getItem('velora-demo-auth')) return null
+    return demoUser
+  })
   const [loading, setLoading] = useState(Boolean(supabase))
+
   useEffect(() => {
     const client = supabase
     if (!client) return
-    void client.auth.getUser().then(({ data }) => { if (data.user) setUser(mapUser(data.user)); setLoading(false) })
-    const { data } = client.auth.onAuthStateChange((_event, session) => setUser(session?.user ? mapUser(session.user) : null))
-    return () => data.subscription.unsubscribe()
+
+    let mounted = true
+
+    const applyIdentity = async (identity: User | null) => {
+      const owner = identity ? await getAuthorizedOwner(identity) : null
+      if (!mounted) return
+      setUser(owner)
+      setLoading(false)
+    }
+
+    void client.auth.getUser().then(({ data }) => applyIdentity(data.user))
+    const { data } = client.auth.onAuthStateChange((_event, session) => {
+      window.setTimeout(() => void applyIdentity(session?.user ?? null), 0)
+    })
+
+    return () => {
+      mounted = false
+      data.subscription.unsubscribe()
+    }
   }, [])
+
   const value = useMemo<AuthContextValue>(() => ({
-    user, loading,
+    user,
+    loading,
     signIn: async (email, password) => {
-      if (!supabase) throw new Error('Staff sign-in is not configured. Use workspace access instead.')
+      if (!supabase) throw new Error('Owner sign-in is not configured yet.')
+
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) throw new Error(error.message)
-      if (data.user) setUser(mapUser(data.user))
+
+      const owner = data.user ? await getAuthorizedOwner(data.user) : null
+      if (!owner) {
+        await supabase.auth.signOut()
+        setUser(null)
+        throw new Error('This account is not authorized to manage Velora.')
+      }
+
+      setUser(owner)
     },
-    enterDemo: () => { window.sessionStorage.setItem('velora-demo-auth', 'true'); setUser({ id: 'demo-manager', email: 'alex@velorabatumi.example', name: 'Alex Morgan', role: 'Property manager' }) },
-    signOut: async () => { window.sessionStorage.removeItem('velora-demo-auth'); if (supabase) await supabase.auth.signOut(); setUser(null) },
+    enterDemo: () => {
+      if (supabase) return
+      window.sessionStorage.setItem('velora-demo-auth', 'true')
+      setUser(demoUser)
+    },
+    signOut: async () => {
+      window.sessionStorage.removeItem('velora-demo-auth')
+      if (supabase) await supabase.auth.signOut()
+      setUser(null)
+    },
   }), [loading, user])
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
