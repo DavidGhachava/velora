@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { PageHeader } from '../../components/ops/PageHeader'
 import { PropertyAmenityManager } from '../../components/ops/PropertyAmenityManager'
 import { PropertyMediaManager } from '../../components/ops/PropertyMediaManager'
+import { RoomInventoryManager } from '../../components/ops/RoomInventoryManager'
 import { ErrorState, LoadingState } from '../../components/ui/Feedback'
 import { StatusBadge } from '../../components/ui/StatusBadge'
 import { useManagedProperties } from '../../hooks/useManagedProperties'
@@ -27,5 +28,6 @@ export function PropertyWorkspacePage() {
     </section>
     <PropertyMediaManager propertyId={property.id} />
     <PropertyAmenityManager propertyId={property.id} />
+    <RoomInventoryManager propertyId={property.id} />
   </>
 }

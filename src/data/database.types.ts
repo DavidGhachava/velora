@@ -964,6 +964,7 @@ export type Database = {
         Row: {
           accessible: boolean
           active: boolean
+          base_rate_minor: number
           bed_type: string
           code: string
           created_at: string
@@ -978,6 +979,7 @@ export type Database = {
         Insert: {
           accessible?: boolean
           active?: boolean
+          base_rate_minor?: number
           bed_type: string
           code: string
           created_at?: string
@@ -992,6 +994,7 @@ export type Database = {
         Update: {
           accessible?: boolean
           active?: boolean
+          base_rate_minor?: number
           bed_type?: string
           code?: string
           created_at?: string
@@ -1187,6 +1190,25 @@ export type Database = {
           p_short_description_ka: string
           p_slug: string
           p_status: string
+        }
+        Returns: string
+      }
+      manage_room_type: {
+        Args: {
+          p_accessible: boolean
+          p_active: boolean
+          p_base_rate_minor: number
+          p_bed_type: string
+          p_code: string
+          p_description_en: string
+          p_description_ka: string
+          p_id?: string
+          p_max_guests: number
+          p_name_en: string
+          p_name_ka: string
+          p_property_id: string
+          p_size_m2?: number
+          p_slug: string
         }
         Returns: string
       }

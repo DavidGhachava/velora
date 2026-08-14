@@ -509,6 +509,33 @@ h3 { font-size: 1.05rem; }
 .amenity-admin-card__mode { display: grid; grid-template-columns: 1fr 1fr; gap: .25rem; padding: .35rem; border-top: 1px solid #d9e3dc; }
 .amenity-admin-card__mode button { min-height: 32px; display: flex; align-items: center; justify-content: center; gap: .25rem; border: 0; border-radius: .35rem; background: transparent; color: #717873; font-size: .58rem; cursor: pointer; }
 .amenity-admin-card__mode button.active { background: white; color: var(--moss-700); font-weight: 750; box-shadow: 0 2px 8px #172a3110; }
+.room-type-checks { display: flex; flex-wrap: wrap; gap: 1rem; }
+.room-type-checks label { display: flex; align-items: center; gap: .45rem; }
+.room-type-checks input { width: 18px; min-height: 18px; accent-color: var(--moss-600); }
+.room-type-admin-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; }
+.room-type-admin-card { min-width: 0; display: grid; gap: .8rem; padding: .9rem; border: 1px solid #dbe1db; border-radius: .65rem; background: #fbfcfa; }
+.room-type-admin-card.is-inactive { opacity: .65; background: #f1f2ef; }
+.room-type-admin-card > div:first-child > span { display: inline-flex; padding: .22rem .38rem; border-radius: .25rem; background: #e9eeea; color: #58625c; font-size: .55rem; font-weight: 750; letter-spacing: .07em; }
+.room-type-admin-card h3 { margin: .45rem 0 .15rem; font-size: .88rem; }
+.room-type-admin-card p { margin: 0; color: #717873; font-size: .63rem; }
+.room-type-admin-card dl { display: flex; gap: .4rem; margin: 0; }
+.room-type-admin-card dl > div { flex: 1; min-width: 0; padding: .5rem; border-radius: .4rem; background: #f0f3f0; }
+.room-type-admin-card dt { display: flex; align-items: center; gap: .25rem; color: #747b76; font-size: .55rem; }
+.room-type-admin-card dd { margin: .15rem 0 0; font-size: .72rem; font-weight: 750; }
+.room-type-admin-card > strong { font-size: 1rem; }
+.room-type-admin-card > strong small { color: #747b76; font-size: .6rem; font-weight: 500; }
+.room-type-admin-card > div:last-child { display: flex; gap: .35rem; }
+.physical-room-entry { display: grid; grid-template-columns: 1.2fr repeat(3, minmax(120px, .7fr)) auto; align-items: end; gap: .65rem; padding: .8rem; border: 1px solid #dfe4de; border-radius: .6rem; background: #f5f7f4; }
+.physical-room-entry h3 { margin: 0 0 .2rem; font-size: .78rem; }
+.physical-room-entry p { margin: 0; color: #737a75; font-size: .6rem; }
+.physical-room-entry label { min-width: 0; display: grid; gap: .3rem; color: #5d655f; font-size: .6rem; font-weight: 700; }
+.physical-room-entry input, .physical-room-entry select { width: 100%; min-width: 0; min-height: 42px; padding: .55rem .6rem; border: 1px solid #cfd6cf; border-radius: .45rem; background: white; }
+.physical-room-table { overflow-x: auto; border: 1px solid #dfe4de; border-radius: .6rem; }
+.physical-room-table table { width: 100%; min-width: 680px; border-collapse: collapse; font-size: .68rem; }
+.physical-room-table th { padding: .6rem .7rem; border-bottom: 1px solid #dfe4de; background: #f5f7f4; color: #707772; text-align: left; font-size: .57rem; text-transform: uppercase; letter-spacing: .07em; }
+.physical-room-table td { padding: .65rem .7rem; border-bottom: 1px solid #edf0ed; text-transform: capitalize; }
+.inventory-toggle { min-height: 30px; padding: .3rem .55rem; border: 1px solid #cbd2cc; border-radius: 999px; background: #f1f2ef; color: #666e68; font-size: .58rem; cursor: pointer; }
+.inventory-toggle.is-active { border-color: #a8c2b3; background: #edf6f1; color: var(--success-700); font-weight: 750; }
 
 .alert { border-radius: .35rem; display: flex; gap: .7rem; padding: .9rem; font-size: .8rem; }
 .alert p { margin: .2rem 0 0; line-height: 1.5; }
@@ -701,6 +728,10 @@ h3 { font-size: 1.05rem; }
   .media-upload .button { grid-column: 1 / -1; width: 100%; }
   .media-admin-grid { grid-template-columns: 1fr; }
   .amenity-admin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .room-type-admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .physical-room-entry { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .physical-room-entry > div:first-child, .physical-room-entry .button { grid-column: 1 / -1; }
+  .physical-room-entry .button { width: 100%; }
 }
 
 @media (max-width: 767px) {
@@ -796,6 +827,8 @@ h3 { font-size: 1.05rem; }
   .media-upload > div { grid-template-columns: 1fr; }
   .media-upload .button { grid-column: auto; }
   .amenity-admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .room-type-admin-grid, .physical-room-entry { grid-template-columns: 1fr; }
+  .physical-room-entry > div:first-child, .physical-room-entry .button { grid-column: auto; }
   .ops-grid { grid-template-columns: 1fr; }
   .kpi-grid { grid-template-columns: 1fr 1fr; }
   .kpi-card strong { font-size: 1.4rem; }
