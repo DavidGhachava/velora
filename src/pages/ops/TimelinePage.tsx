@@ -6,12 +6,12 @@ import { PageHeader } from '../../components/ops/PageHeader'
 import { ReservationTable } from '../../components/ops/ReservationTable'
 import { Button } from '../../components/ui/Button'
 import { StatusBadge } from '../../components/ui/StatusBadge'
-import { useAppData } from '../../data/AppDataProvider'
+import { useOperationsData } from '../../hooks/useOperationsData'
 import { intervalsOverlap } from '../../domain/availability'
 
 export function TimelinePage() {
-  const { state } = useAppData()
-  const [start, setStart] = useState(parseISO('2026-08-11'))
+  const { state } = useOperationsData()
+  const [start, setStart] = useState(new Date())
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const [roomType, setRoomType] = useState('all')
   const days = useMemo(() => Array.from({ length: 8 }, (_, index) => addDays(start, index)), [start])

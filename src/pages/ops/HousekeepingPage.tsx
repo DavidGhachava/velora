@@ -4,11 +4,11 @@ import { PageHeader } from '../../components/ops/PageHeader'
 import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/Feedback'
 import { StatusBadge } from '../../components/ui/StatusBadge'
-import { useAppData } from '../../data/AppDataProvider'
+import { useOperationsData } from '../../hooks/useOperationsData'
 import type { RoomCondition } from '../../domain/types'
 
 export function HousekeepingPage() {
-  const { state, setRoomCondition } = useAppData()
+  const { state, setRoomCondition } = useOperationsData()
   const [filter, setFilter] = useState<'all' | RoomCondition>('all')
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)

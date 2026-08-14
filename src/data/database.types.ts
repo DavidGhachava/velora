@@ -1221,6 +1221,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_reservation_room: {
+        Args: { p_reservation_id: string; p_room_id: string }
+        Returns: undefined
+      }
+      check_in_reservation: {
+        Args: { p_reservation_id: string }
+        Returns: undefined
+      }
+      check_out_reservation: {
+        Args: { p_reservation_id: string }
+        Returns: undefined
+      }
       create_direct_booking:
         | {
             Args: {
@@ -1310,6 +1322,14 @@ export type Database = {
       }
       set_property_cover: {
         Args: { p_media_id: string; p_property_id: string }
+        Returns: undefined
+      }
+      set_room_condition: {
+        Args: { p_condition: string; p_room_id: string }
+        Returns: undefined
+      }
+      settle_reservation_folio: {
+        Args: { p_reservation_id: string }
         Returns: undefined
       }
     }

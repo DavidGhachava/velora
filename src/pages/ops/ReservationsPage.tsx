@@ -5,10 +5,10 @@ import { PageHeader } from '../../components/ops/PageHeader'
 import { ReservationTable } from '../../components/ops/ReservationTable'
 import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/Feedback'
-import { useAppData } from '../../data/AppDataProvider'
+import { useOperationsData } from '../../hooks/useOperationsData'
 
 export function ReservationsPage() {
-  const { state } = useAppData()
+  const { state, isLoading, error } = useOperationsData()
   const [params] = useSearchParams()
   const [query, setQuery] = useState(params.get('search') ?? '')
   const [status, setStatus] = useState('all')
@@ -26,5 +26,7 @@ export function ReservationsPage() {
     anchor.click()
     URL.revokeObjectURL(url)
   }
+  if (isLoading) return <div className="app-loading" role="status">Loading reservations…</div>
+  if (error) return <div className="alert alert--error" role="alert">{error}</div>
   return <><PageHeader eyebrow="Front office" title="Reservations" description={`${state.reservations.length} stays across direct and channel sources.`} actions={<><Button variant="secondary" icon={<Download size={16} />} onClick={exportCsv}>Export</Button><Link className="button button--primary button--md" to="/availability"><Plus size={16} /> New reservation</Link></>} /><section className="card"><div className="toolbar"><label className="search-input"><Search size={16} /><span className="sr-only">Search reservations</span><input className="input" placeholder="Guest or confirmation" value={query} onChange={(event) => setQuery(event.target.value)} /></label><label><span className="sr-only">Filter by status</span><select className="input" value={status} onChange={(event) => setStatus(event.target.value)}><option value="all">All statuses</option><option value="confirmed">Confirmed</option><option value="in_house">In house</option><option value="checked_out">Checked out</option><option value="cancelled">Cancelled</option></select></label>{(query || status !== 'all') && <button className="text-link" onClick={() => { setQuery(''); setStatus('all') }}>Clear filters</button>}</div>{filtered.length ? <ReservationTable reservations={filtered} guests={state.guests} rooms={state.rooms} roomTypes={state.roomTypes} /> : <EmptyState title="No reservations match" description="Clear your search or status filter to see all stays." />}</section></>
 }

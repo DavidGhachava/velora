@@ -12,7 +12,7 @@ import { Link, useParams } from "react-router-dom";
 import { PageHeader } from "../../components/ops/PageHeader";
 import { Button } from "../../components/ui/Button";
 import { StatusBadge } from "../../components/ui/StatusBadge";
-import { useAppData } from "../../data/AppDataProvider";
+import { useOperationsData } from "../../hooks/useOperationsData";
 import { getAvailableRooms } from "../../domain/availability";
 import { folioBalance } from "../../domain/operations";
 import { formatMoney } from "../../domain/money";
@@ -20,7 +20,7 @@ import { NotFoundPage } from "../NotFoundPage";
 
 export function ReservationDetailPage() {
   const { reservationId } = useParams();
-  const { state, assignRoom, checkIn, settle, checkOut } = useAppData();
+  const { state, isLoading, assignRoom, checkIn, settle, checkOut } = useOperationsData();
   const reservation = state.reservations.find(
     (item) => item.id === reservationId,
   );
@@ -44,6 +44,7 @@ export function ReservationDetailPage() {
         : [],
     [reservation, roomType, state],
   );
+  if (isLoading) return <div className="app-loading" role="status">Loading reservation…</div>;
   if (!reservation || !roomType) return <NotFoundPage />;
   const guest = state.guests.find((item) => item.id === reservation.guestId);
   const room = state.rooms.find((item) => item.id === reservation.roomId);
