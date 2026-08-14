@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useAppData } from '../data/AppDataProvider'
 import { batumiHotels, type BatumiHotel } from '../data/batumiHotels'
 import { getAvailableRoomTypes } from '../domain/availability'
+import { usePublicCatalog } from './usePublicCatalog'
 
 export type PropertySort = 'recommended' | 'price-asc' | 'price-desc' | 'rating' | 'size-desc' | 'size-asc'
 
@@ -26,9 +27,9 @@ const comparePublishedPrice = (a: BatumiHotel, b: BatumiHotel, direction: 1 | -1
   return (a.startingRateGel - b.startingRateGel) * direction
 }
 
-export function filterAndSortProperties(filters: PropertyFilters, sort: PropertySort, bookableSlugs: Set<string | undefined> | null) {
+export function filterAndSortProperties(filters: PropertyFilters, sort: PropertySort, bookableSlugs: Set<string | undefined> | null, hotels = batumiHotels) {
   const normalizedQuery = filters.query.trim().toLowerCase()
-  return batumiHotels.filter((hotel) => {
+  return hotels.filter((hotel) => {
     const searchable = `${hotel.name} ${hotel.brand} ${hotel.area} ${hotel.highlights.join(' ')} ${(hotel.includedAmenities ?? []).join(' ')}`.toLowerCase()
     const amenities = [...(hotel.includedAmenities ?? []), ...(hotel.availableAmenities ?? []), ...hotel.highlights].join(' ').toLowerCase()
     return (!normalizedQuery || searchable.includes(normalizedQuery))
@@ -45,12 +46,13 @@ export function filterAndSortProperties(filters: PropertyFilters, sort: Property
     if (sort === 'rating') return (b.reviews?.score ?? -1) - (a.reviews?.score ?? -1)
     if (sort === 'size-desc') return b.roomCount - a.roomCount
     if (sort === 'size-asc') return a.roomCount - b.roomCount
-    return batumiHotels.indexOf(a) - batumiHotels.indexOf(b)
+    return hotels.indexOf(a) - hotels.indexOf(b)
   })
 }
 
 export function usePropertyDirectory() {
   const { state } = useAppData()
+  const catalog = usePublicCatalog()
   const [filters, setFilters] = useState<PropertyFilters>(initialFilters)
   const [sort, setSort] = useState<PropertySort>('recommended')
 
@@ -60,12 +62,12 @@ export function usePropertyDirectory() {
     return new Set(getAvailableRoomTypes(state.roomTypes, state.rooms, state.reservations, filters.arrival, filters.departure, 1).map((room) => room.propertySlug).filter(Boolean))
   }, [dateError, filters.arrival, filters.departure, state.reservations, state.roomTypes, state.rooms])
 
-  const properties = useMemo(() => filterAndSortProperties(filters, sort, bookableSlugs), [bookableSlugs, filters, sort])
+  const properties = useMemo(() => filterAndSortProperties(filters, sort, bookableSlugs, catalog.data.properties), [bookableSlugs, catalog.data.properties, filters, sort])
 
   const activeFilterCount = [filters.propertyType !== 'all', filters.area !== 'all', Boolean(filters.arrival || filters.departure), filters.maxPriceGel !== 1000, filters.minimumRating > 0, filters.minimumRooms > 0, ...filters.amenities.map(() => true)].filter(Boolean).length
   const updateFilter = <Key extends keyof PropertyFilters>(key: Key, value: PropertyFilters[Key]) => setFilters((current) => ({ ...current, [key]: value }))
   const toggleAmenity = (amenity: string) => setFilters((current) => ({ ...current, amenities: current.amenities.includes(amenity) ? current.amenities.filter((item) => item !== amenity) : [...current.amenities, amenity] }))
   const clearFilters = () => setFilters((current) => ({ ...initialFilters, query: current.query }))
 
-  return { properties, filters, sort, setSort, updateFilter, toggleAmenity, clearFilters, activeFilterCount, dateError }
+  return { properties, filters, sort, setSort, updateFilter, toggleAmenity, clearFilters, activeFilterCount, dateError, isLoading: catalog.isFetching, error: catalog.error }
 }

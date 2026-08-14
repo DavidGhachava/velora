@@ -5,25 +5,30 @@ import { CheckoutHeader } from '../../components/public/CheckoutHeader'
 import { GuestPaymentForm, type GuestPaymentValues } from '../../components/public/GuestPaymentForm'
 import { PriceSummary } from '../../components/public/PriceSummary'
 import { useAppData } from '../../data/AppDataProvider'
-import { getAvailableRooms, nightsBetween } from '../../domain/availability'
+import { createDirectBooking } from '../../data/bookingRepository'
+import { nightsBetween } from '../../domain/availability'
 import { calculateTax, formatMoney } from '../../domain/money'
 import type { FolioItem, Guest, Reservation } from '../../domain/types'
-import { NotFoundPage } from '../NotFoundPage'
+import { usePublicCatalog } from '../../hooks/usePublicCatalog'
 import { useLocale } from '../../i18n/LocaleProvider'
+import { NotFoundPage } from '../NotFoundPage'
+import { defaultStayDates } from '../../domain/bookingDates'
 
 export function CheckoutPage() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const { state, addReservation } = useAppData()
-  const { t } = useLocale()
+  const catalog = usePublicCatalog()
+  const { t, language } = useLocale()
+  const defaultDates = defaultStayDates()
   const [step, setStep] = useState<'extras' | 'details'>('extras')
   const [selectedExtras, setSelectedExtras] = useState<Record<string, number>>({})
   const [submitting, setSubmitting] = useState(false)
   const [paymentError, setPaymentError] = useState<string | null>(null)
-  const checkIn = params.get('checkIn') ?? '2026-08-14'
-  const checkOut = params.get('checkOut') ?? '2026-08-17'
+  const checkIn = params.get('checkIn') ?? defaultDates.checkIn
+  const checkOut = params.get('checkOut') ?? defaultDates.checkOut
   const guestsCount = Number(params.get('guests') ?? '2')
-  const room = state.roomTypes.find((item) => item.id === (params.get('roomType') ?? 'rt-suite'))
+  const room = catalog.data.roomTypes.find((item) => item.id === params.get('roomType'))
   if (!room) return <NotFoundPage />
 
   const stayNights = nightsBetween(checkIn, checkOut)
@@ -35,35 +40,58 @@ export function CheckoutPage() {
   const submit = async (values: GuestPaymentValues) => {
     setSubmitting(true)
     setPaymentError(null)
-    await new Promise((resolve) => window.setTimeout(resolve, 800))
     if (values.cardNumber.replaceAll(' ', '') === '4000000000000002') {
       setPaymentError('Your test card was declined. No charge was made. Try 4242 4242 4242 4242.')
       setSubmitting(false)
       return
     }
-    const availableRoom = getAvailableRooms(room, state.rooms, state.reservations, checkIn, checkOut)[0]
-    if (!availableRoom) {
-      setPaymentError('This room category was just booked for your dates. Return to availability to choose another stay.')
-      setSubmitting(false)
-      return
-    }
-    const nights = nightsBetween(checkIn, checkOut)
-    const extrasTotal = state.extras.reduce((total, extra) => total + (selectedExtras[extra.id] ?? 0) * extra.price * (extra.unit === 'person' ? guestsCount : extra.unit === 'night' ? nights : 1), 0)
-    const subtotal = room.baseRate * nights + extrasTotal
-    const tax = calculateTax(subtotal)
-    const id = `res-${Date.now()}`
-    const guestId = `g-${Date.now()}`
-    const folio: FolioItem[] = [{ id: `${id}-room`, description: `${nights} nights · ${room.name}`, category: 'room', quantity: nights, unitAmount: room.baseRate, total: room.baseRate * nights, postedAt: new Date().toISOString() }]
-    state.extras.forEach((extra) => {
-      const quantity = selectedExtras[extra.id] ?? 0
-      if (quantity > 0) folio.push({ id: `${id}-${extra.id}`, description: extra.name, category: 'extra', quantity, unitAmount: extra.price, total: quantity * extra.price * (extra.unit === 'person' ? guestsCount : extra.unit === 'night' ? nights : 1), postedAt: new Date().toISOString() })
-    })
-    folio.push({ id: `${id}-tax`, description: 'Taxes and fees', category: 'tax', quantity: 1, unitAmount: tax, total: tax, postedAt: new Date().toISOString() })
-    const guest: Guest = { id: guestId, name: `${values.firstName} ${values.lastName}`, email: values.email, phone: values.phone, country: values.country, preferences: [] }
-    const reservation: Reservation = { id, confirmationNumber: `VLR-2608-${String(state.reservations.length + 1010)}`, guestId, roomTypeId: room.id, roomId: availableRoom.id, checkIn, checkOut, adults: guestsCount, children: 0, status: 'confirmed', source: 'Direct', total: subtotal + tax, paid: subtotal + tax, eta: values.arrivalTime, specialRequest: values.request, createdAt: new Date().toISOString(), folio }
+
     try {
+      const booked = await createDirectBooking({
+        roomTypeId: room.id,
+        checkIn,
+        checkOut,
+        adults: guestsCount,
+        children: 0,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        phone: values.phone,
+        locale: language,
+        specialRequests: values.request,
+        extras: Object.entries(selectedExtras).filter(([, quantity]) => quantity > 0).map(([sku, quantity]) => ({ sku, quantity })),
+      })
+      const guestId = `guest-${booked.reservationId}`
+      const roomSubtotal = room.baseRate * stayNights
+      const extrasTotal = state.extras.reduce((total, extra) => total + (selectedExtras[extra.id] ?? 0) * extra.price * (extra.unit === 'person' ? guestsCount : extra.unit === 'night' ? stayNights : 1), 0)
+      const serverTax = booked.totalMinor - roomSubtotal - extrasTotal
+      const folio: FolioItem[] = [
+        { id: `${booked.reservationId}-room`, description: `${stayNights} nights · ${room.name}`, category: 'room', quantity: stayNights, unitAmount: room.baseRate, total: roomSubtotal, postedAt: new Date().toISOString() },
+        ...state.extras.filter((extra) => (selectedExtras[extra.id] ?? 0) > 0).map((extra): FolioItem => ({ id: `${booked.reservationId}-${extra.id}`, description: extra.name, category: 'extra', quantity: selectedExtras[extra.id] ?? 0, unitAmount: extra.price, total: (selectedExtras[extra.id] ?? 0) * extra.price * (extra.unit === 'person' ? guestsCount : extra.unit === 'night' ? stayNights : 1), postedAt: new Date().toISOString() })),
+        { id: `${booked.reservationId}-tax`, description: 'Taxes and fees', category: 'tax', quantity: 1, unitAmount: serverTax, total: serverTax, postedAt: new Date().toISOString() },
+      ]
+      const guest: Guest = { id: guestId, name: `${values.firstName} ${values.lastName}`, email: values.email, phone: values.phone, country: values.country, preferences: [] }
+      const reservation: Reservation = {
+        id: booked.reservationId,
+        confirmationNumber: booked.confirmationNumber,
+        guestId,
+        roomTypeId: room.id,
+        roomId: booked.roomId,
+        checkIn,
+        checkOut,
+        adults: guestsCount,
+        children: 0,
+        status: 'confirmed',
+        source: 'Direct',
+        total: booked.totalMinor,
+        paid: booked.totalMinor,
+        eta: values.arrivalTime,
+        specialRequest: values.request,
+        createdAt: new Date().toISOString(),
+        folio,
+      }
       await addReservation(reservation, guest)
-      navigate(`/booking/confirmation/${id}`)
+      navigate(`/booking/confirmation/${booked.reservationId}`)
     } catch (error) {
       setPaymentError(error instanceof Error ? error.message : 'We could not complete the booking.')
       setSubmitting(false)

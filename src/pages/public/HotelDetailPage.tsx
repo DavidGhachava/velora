@@ -2,14 +2,16 @@ import { ArrowLeft, MapPin } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { ApartmentDetailTemplate } from '../../components/public/ApartmentDetailTemplate'
 import { PropertyOverview } from '../../components/public/PropertyOverview'
-import { getBatumiHotel } from '../../data/batumiHotels'
 import { NotFoundPage } from '../NotFoundPage'
 import { useLocale } from '../../i18n/LocaleProvider'
+import { usePublicCatalog } from '../../hooks/usePublicCatalog'
 
 export function HotelDetailPage() {
   const { slug } = useParams()
   const { t } = useLocale()
-  const hotel = getBatumiHotel(slug)
+  const catalog = usePublicCatalog()
+  const hotel = catalog.data.properties.find((property) => property.slug === slug)
+  if (catalog.isLoading && !hotel) return <div className="app-loading" role="status">{t('Loading property…')}</div>
   if (!hotel) return <NotFoundPage />
   if (hotel.propertyType === 'Apartment') return <ApartmentDetailTemplate hotel={hotel} />
 

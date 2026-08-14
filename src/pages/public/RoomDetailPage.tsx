@@ -2,19 +2,22 @@ import { Accessibility, ArrowLeft, BedDouble, Maximize2, Users } from 'lucide-re
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { AmenityGrid } from '../../components/public/AmenityGrid'
 import { ResponsiveImage } from '../../components/ui/ResponsiveImage'
-import { useAppData } from '../../data/AppDataProvider'
 import { formatMoney } from '../../domain/money'
+import { usePublicCatalog } from '../../hooks/usePublicCatalog'
 import { useLocale } from '../../i18n/LocaleProvider'
 import { NotFoundPage } from '../NotFoundPage'
+import { defaultStayDates } from '../../domain/bookingDates'
 
 export function RoomDetailPage() {
   const { slug } = useParams()
   const [params] = useSearchParams()
-  const { state } = useAppData()
+  const catalog = usePublicCatalog()
   const { t } = useLocale()
-  const room = state.roomTypes.find((item) => item.slug === slug)
+  const room = catalog.data.roomTypes.find((item) => item.slug === slug)
+  if (catalog.isLoading && !room) return <div className="app-loading" role="status">{t('Loading room…')}</div>
   if (!room) return <NotFoundPage />
-  const bookingParams = new URLSearchParams({ checkIn: params.get('checkIn') ?? '2026-08-14', checkOut: params.get('checkOut') ?? '2026-08-17', guests: params.get('guests') ?? '2', roomType: room.id })
+  const defaultDates = defaultStayDates()
+  const bookingParams = new URLSearchParams({ checkIn: params.get('checkIn') ?? defaultDates.checkIn, checkOut: params.get('checkOut') ?? defaultDates.checkOut, guests: params.get('guests') ?? '2', roomType: room.id })
   const bookingUrl = `/booking?${bookingParams.toString()}`
   return <>
     <section className="room-detail-hero"><ResponsiveImage src={room.image} sizes="100vw" fetchPriority="high" alt={`${room.name} room interior`} /><div><Link className="hero-back-link" to={room.propertySlug ? `/hotels/${room.propertySlug}` : '/rooms'}><ArrowLeft size={15} /> {room.propertyName ?? t('All rooms')}</Link><p className="eyebrow">{room.propertyName ?? 'Velora Batumi'}</p><h1>{t(room.name)}</h1></div></section>

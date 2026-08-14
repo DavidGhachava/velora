@@ -2,15 +2,16 @@ import { BadgeCheck, Search, X } from 'lucide-react'
 import { HotelCard } from '../../components/public/HotelCard'
 import { PropertyDirectoryFilters } from '../../components/public/PropertyDirectoryFilters'
 import { ResponsiveImage } from '../../components/ui/ResponsiveImage'
-import { batumiHotels } from '../../data/batumiHotels'
 import { heroImages } from '../../data/seed'
 import { usePropertyDirectory } from '../../hooks/usePropertyDirectory'
+import { usePublicCatalog } from '../../hooks/usePublicCatalog'
 import { useLocale } from '../../i18n/LocaleProvider'
 
 export function HotelsPage() {
   const directory = usePropertyDirectory()
+  const catalog = usePublicCatalog()
   const { t } = useLocale()
-  const areas = [...new Set(batumiHotels.map((hotel) => hotel.area))]
+  const areas = [...new Set(catalog.data.properties.map((hotel) => hotel.area))]
   return <div className="hotels-page">
     <section className="page-hero page-hero--hotels"><ResponsiveImage src={heroImages.batumi} sizes="100vw" fetchPriority="high" alt="Batumi skyline beside the Black Sea" /><div><p className="eyebrow">{t('Accommodation')}</p><h1>{t('Hotels and apartments in Batumi')}</h1></div></section>
     <section className="hotel-directory section"><div className="content-container">

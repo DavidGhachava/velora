@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "latest",
-    "@supabase/supabase-js": "latest",
+    "@supabase/supabase-js": "2.112.3",
     "@tailwindcss/vite": "latest",
     "@tanstack/react-query": "latest",
     "date-fns": "latest",

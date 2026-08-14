@@ -1,7 +1,7 @@
 export interface PropertyMedia {
   id: string
   propertyId: string
-  storagePath: string
+  storagePath: string | null
   publicUrl: string
   altEn: string
   altKa: string

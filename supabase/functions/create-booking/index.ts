@@ -18,6 +18,7 @@ interface BookingRequest {
   phone: string;
   locale: "en" | "ka";
   specialRequests: string;
+  extras: Array<{ sku: string; quantity: number }>;
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null;
@@ -43,11 +44,17 @@ const parseBody = (value: unknown): BookingRequest => {
   const phone = stringValue(value, "phone", 40);
   const specialRequests = stringValue(value, "specialRequests", 1000);
   const locale = value.locale;
+  const rawExtras = value.extras;
 
   if (!/^[0-9a-f-]{36}$/i.test(roomTypeId)) throw new Error("Invalid roomTypeId");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(checkIn) || !/^\d{4}-\d{2}-\d{2}$/.test(checkOut)) throw new Error("Invalid stay dates");
   if (!firstName || !lastName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid guest details");
   if (locale !== "en" && locale !== "ka") throw new Error("Invalid locale");
+  if (!Array.isArray(rawExtras) || rawExtras.length > 10) throw new Error("Invalid extras");
+  const extras = rawExtras.map((extra) => {
+    if (!isRecord(extra)) throw new Error("Invalid extra");
+    return { sku: stringValue(extra, "sku", 80), quantity: integerValue(extra, "quantity", 1, 10) };
+  });
 
   return {
     roomTypeId,
@@ -61,6 +68,7 @@ const parseBody = (value: unknown): BookingRequest => {
     phone,
     locale,
     specialRequests,
+    extras,
   };
 };
 
@@ -117,6 +125,7 @@ Deno.serve(async (request: Request) => {
       p_phone: input.phone,
       p_locale: input.locale,
       p_special_requests: input.specialRequests,
+      p_extras: input.extras,
       p_payment_reference: paymentReference,
     });
 

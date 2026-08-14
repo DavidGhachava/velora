@@ -19,7 +19,7 @@ export const listPropertyMedia = async (propertyId: string): Promise<PropertyMed
     id: item.id,
     propertyId: item.property_id,
     storagePath: item.storage_path,
-    publicUrl: client.storage.from(bucket).getPublicUrl(item.storage_path).data.publicUrl,
+    publicUrl: item.source_url ?? (item.storage_path ? client.storage.from(bucket).getPublicUrl(item.storage_path).data.publicUrl : ''),
     altEn: item.alt_en,
     altKa: item.alt_ka,
     width: item.width,
@@ -76,8 +76,10 @@ export const deletePropertyMedia = async (media: PropertyMedia): Promise<void> =
   const { error } = await client.from('property_media').delete().eq('id', media.id)
   if (error) throw new Error(error.message)
 
-  const { error: storageError } = await client.storage.from(bucket).remove([media.storagePath])
-  if (storageError) throw new Error(`Image removed from the listing, but storage cleanup failed: ${storageError.message}`)
+  if (media.storagePath) {
+    const { error: storageError } = await client.storage.from(bucket).remove([media.storagePath])
+    if (storageError) throw new Error(`Image removed from the listing, but storage cleanup failed: ${storageError.message}`)
+  }
 
   if (media.isCover) {
     const { data: next } = await client.from('property_media').select('id').eq('property_id', media.propertyId).order('sort_order').limit(1).maybeSingle()

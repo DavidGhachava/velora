@@ -119,6 +119,7 @@ export type Database = {
           image_path: string | null
           name_en: string
           name_ka: string
+          pricing_unit: string
           property_id: string | null
           sku: string
           stock: number | null
@@ -134,6 +135,7 @@ export type Database = {
           image_path?: string | null
           name_en: string
           name_ka: string
+          pricing_unit?: string
           property_id?: string | null
           sku: string
           stock?: number | null
@@ -149,6 +151,7 @@ export type Database = {
           image_path?: string | null
           name_en?: string
           name_ka?: string
+          pricing_unit?: string
           property_id?: string | null
           sku?: string
           stock?: number | null
@@ -560,7 +563,8 @@ export type Database = {
           is_cover: boolean
           property_id: string
           sort_order: number
-          storage_path: string
+          source_url: string | null
+          storage_path: string | null
           width: number | null
         }
         Insert: {
@@ -574,7 +578,8 @@ export type Database = {
           is_cover?: boolean
           property_id: string
           sort_order?: number
-          storage_path: string
+          source_url?: string | null
+          storage_path?: string | null
           width?: number | null
         }
         Update: {
@@ -588,7 +593,8 @@ export type Database = {
           is_cover?: boolean
           property_id?: string
           sort_order?: number
-          storage_path?: string
+          source_url?: string | null
+          storage_path?: string | null
           width?: number | null
         }
         Relationships: [
@@ -945,7 +951,8 @@ export type Database = {
           is_cover: boolean
           room_type_id: string
           sort_order: number
-          storage_path: string
+          source_url: string | null
+          storage_path: string | null
         }
         Insert: {
           alt_en: string
@@ -954,7 +961,8 @@ export type Database = {
           is_cover?: boolean
           room_type_id: string
           sort_order?: number
-          storage_path: string
+          source_url?: string | null
+          storage_path?: string | null
         }
         Update: {
           alt_en?: string
@@ -963,7 +971,8 @@ export type Database = {
           is_cover?: boolean
           room_type_id?: string
           sort_order?: number
-          storage_path?: string
+          source_url?: string | null
+          storage_path?: string | null
         }
         Relationships: [
           {
@@ -1212,23 +1221,42 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      create_direct_booking: {
-        Args: {
-          p_adults: number
-          p_check_in: string
-          p_check_out: string
-          p_children: number
-          p_email: string
-          p_first_name: string
-          p_last_name: string
-          p_locale: string
-          p_payment_reference: string
-          p_phone: string
-          p_room_type_id: string
-          p_special_requests: string
-        }
-        Returns: Json
-      }
+      create_direct_booking:
+        | {
+            Args: {
+              p_adults: number
+              p_check_in: string
+              p_check_out: string
+              p_children: number
+              p_email: string
+              p_extras: Json
+              p_first_name: string
+              p_last_name: string
+              p_locale: string
+              p_payment_reference: string
+              p_phone: string
+              p_room_type_id: string
+              p_special_requests: string
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              p_adults: number
+              p_check_in: string
+              p_check_out: string
+              p_children: number
+              p_email: string
+              p_first_name: string
+              p_last_name: string
+              p_locale: string
+              p_payment_reference: string
+              p_phone: string
+              p_room_type_id: string
+              p_special_requests: string
+            }
+            Returns: Json
+          }
       manage_property: {
         Args: {
           p_address: string
@@ -1272,6 +1300,13 @@ export type Database = {
           p_slug: string
         }
         Returns: string
+      }
+      search_available_room_types: {
+        Args: { p_check_in: string; p_check_out: string; p_guests: number }
+        Returns: {
+          available_count: number
+          room_type_id: string
+        }[]
       }
       set_property_cover: {
         Args: { p_media_id: string; p_property_id: string }
