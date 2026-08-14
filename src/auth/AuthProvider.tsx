@@ -18,6 +18,7 @@ interface OwnerProfile {
 
 interface AuthContextValue {
   user: AuthUser | null
+  preview: boolean
   loading: boolean
   signIn: (email: string, password: string) => Promise<void>
   enterDemo: () => void
@@ -26,9 +27,9 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 const demoUser: AuthUser = {
-  id: 'demo-manager',
-  email: 'owner@velora.local',
-  name: 'Velora Owner',
+  id: 'preview-owner',
+  email: 'davidavowo@gmail.com',
+  name: 'David',
   role: 'Owner',
 }
 
@@ -53,10 +54,9 @@ const getAuthorizedOwner = async (identity: User): Promise<AuthUser | null> => {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(() => {
-    if (supabase || !window.sessionStorage.getItem('velora-demo-auth')) return null
-    return demoUser
+    return window.sessionStorage.getItem('velora-owner-preview') ? demoUser : null
   })
-  const [loading, setLoading] = useState(Boolean(supabase))
+  const [loading, setLoading] = useState(Boolean(supabase) && !window.sessionStorage.getItem('velora-owner-preview'))
 
   useEffect(() => {
     const client = supabase
@@ -65,6 +65,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mounted = true
 
     const applyIdentity = async (identity: User | null) => {
+      if (window.sessionStorage.getItem('velora-owner-preview')) {
+        if (mounted) {
+          setUser(demoUser)
+          setLoading(false)
+        }
+        return
+      }
       const owner = identity ? await getAuthorizedOwner(identity) : null
       if (!mounted) return
       setUser(owner)
@@ -84,6 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AuthContextValue>(() => ({
     user,
+    preview: user?.id === demoUser.id,
     loading,
     signIn: async (email, password) => {
       if (!supabase) throw new Error('Owner sign-in is not configured yet.')
@@ -101,12 +109,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(owner)
     },
     enterDemo: () => {
-      if (supabase) return
-      window.sessionStorage.setItem('velora-demo-auth', 'true')
+      window.sessionStorage.setItem('velora-owner-preview', 'true')
       setUser(demoUser)
+      setLoading(false)
     },
     signOut: async () => {
-      window.sessionStorage.removeItem('velora-demo-auth')
+      window.sessionStorage.removeItem('velora-owner-preview')
       if (supabase) await supabase.auth.signOut()
       setUser(null)
     },
