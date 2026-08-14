@@ -1,5 +1,5 @@
 import { AnimatePresence, LazyMotion, domAnimation, m, useReducedMotion } from 'framer-motion'
-import { ArrowRight, MapPin, Menu, X } from 'lucide-react'
+import { ArrowRight, MapPin, Menu, UserRound, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAppData } from '../../data/AppDataProvider'
@@ -49,9 +49,13 @@ export function PublicLayout() {
           <NavLink to="/availability" onClick={() => setOpen(false)}>{t('Find a stay')}</NavLink>
           <NavLink to="/manage" onClick={() => setOpen(false)}>{t('Manage booking')}</NavLink>
         </div>
-        <div className="mobile-nav-bottom"><LocaleMenu inverted /><a href="mailto:stay@velorabatumi.example">{t('Guest support')}</a></div>
+        <div className="mobile-nav-bottom"><LocaleMenu inverted /><Link to="/ops/sign-in" onClick={() => setOpen(false)}>{t('Staff sign in')}</Link></div>
       </nav>
-      <div className="header-actions"><LocaleMenu /><Link className="header-reserve" to="/availability" onClick={() => setOpen(false)}>{t('Find a stay')}</Link></div>
+      <div className="header-actions">
+        <LocaleMenu />
+        <Link className="staff-access" to="/ops/sign-in" aria-label={t('Staff sign in')} title={t('Staff sign in')}><UserRound size={16} /> <span>{t('Staff')}</span></Link>
+        <Link className="header-reserve" to="/availability" onClick={() => setOpen(false)}>{t('Find a stay')}</Link>
+      </div>
       <button className="menu-button" aria-label={open ? t('Close navigation') : t('Open navigation')} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
     </header>}
     <AnimatePresence mode="wait" initial={false}><m.main id="main-content" key={location.pathname} initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -4 }} transition={{ duration: .24, ease: [0.22, 1, 0.36, 1] }}><Outlet /></m.main></AnimatePresence>

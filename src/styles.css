@@ -98,6 +98,10 @@ h3 { font-size: 1.05rem; }
 .public-nav a.active::after { content: ''; position: absolute; left: .85rem; right: .85rem; bottom: .25rem; height: 1px; background: currentColor; }
 .public-header.is-scrolled .public-nav a.active, .public-header.is-surface .public-nav a.active { color: var(--moss-700); background: #e8efeb; }
 .public-header.is-scrolled .public-nav a.active::after, .public-header.is-surface .public-nav a.active::after { display: none; }
+.staff-access { min-height: 38px; display: inline-flex; align-items: center; gap: .4rem; border: 1px solid currentColor; border-radius: 999px; padding: .55rem .72rem; background: #ffffff0d; font-size: .66rem; font-weight: 750; letter-spacing: .04em; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.staff-access:hover { background: #fff; color: var(--night-950); }
+.public-header.is-scrolled .staff-access, .public-header.is-surface .staff-access { border-color: #d7ddd8; background: #fff; color: var(--ink-700); }
+.public-header.is-scrolled .staff-access:hover, .public-header.is-surface .staff-access:hover { border-color: #a9c4b7; color: var(--moss-700); }
 .header-reserve { border: 1px solid currentColor; border-radius: 999px; padding: .7rem 1rem; text-transform: uppercase; letter-spacing: .12em; font-size: .68rem; font-weight: 750; transition: background-color .2s, color .2s; }
 .header-reserve:hover { background: white; color: var(--night-950); }
 .public-header.is-scrolled .header-reserve, .public-header.is-surface .header-reserve { background: var(--moss-600); border-color: var(--moss-600); color: white; }
@@ -681,7 +685,7 @@ h3 { font-size: 1.05rem; }
   .housekeeping-board { grid-template-columns: 1fr 1fr; }
   .analytics-grid { grid-template-columns: 1fr; }
   .public-header { grid-template-columns: 1fr auto auto; height: 72px; }
-  .header-location, .header-actions .locale-menu { display: none; }
+  .header-location, .header-actions .locale-menu, .header-actions .staff-access { display: none; }
   .public-nav { display: none; position: fixed; z-index: 1; inset: 0; overflow-y: auto; background: linear-gradient(145deg, #09191e, #0d2428 70%, #17352f); padding: max(1.35rem, env(safe-area-inset-top)) max(1.35rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1.35rem, env(safe-area-inset-left)); flex-direction: column; align-items: stretch; gap: 0; }
   .public-nav.is-open { display: flex; }
   .desktop-nav-links { display: none; }

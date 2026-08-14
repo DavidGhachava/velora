@@ -228,6 +228,7 @@ const translations: Record<string, string> = {
   'Ready to choose your dates?': 'მზად ხართ თარიღების ასარჩევად?',
   'Hotels, apartments and rooms across Batumi.': 'სასტუმროები, აპარტამენტები და ნომრები ბათუმში.',
   'Guest support': 'სტუმრის დახმარება',
+  'Staff sign in': 'პერსონალის შესვლა',
   'Language': 'ენა',
   'Currency': 'ვალუტა',
   'English': 'ინგლისური',
