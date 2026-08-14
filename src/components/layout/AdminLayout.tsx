@@ -1,4 +1,4 @@
-import { BarChart3, BedDouble, CalendarDays, ChevronRight, ClipboardCheck, ConciergeBell, Hotel, LayoutDashboard, Menu, RefreshCw, Search, Settings2, UsersRound, X } from 'lucide-react'
+import { BarChart3, BedDouble, Building2, CalendarDays, ChevronRight, ClipboardCheck, ConciergeBell, Hotel, LayoutDashboard, Menu, RefreshCw, Search, Settings2, UsersRound, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAppData } from '../../data/AppDataProvider'
@@ -7,6 +7,7 @@ import { useAuth } from '../../auth/AuthProvider'
 
 const nav = [
   { label: 'Today', path: '/ops/overview', icon: LayoutDashboard },
+  { label: 'Properties', path: '/ops/properties', icon: Building2 },
   { label: 'Timeline', path: '/ops/timeline', icon: CalendarDays },
   { label: 'Reservations', path: '/ops/reservations', icon: UsersRound },
   { label: 'Housekeeping', path: '/ops/housekeeping', icon: ClipboardCheck },

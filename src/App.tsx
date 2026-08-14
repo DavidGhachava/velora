@@ -16,6 +16,7 @@ const ConfirmationPage = lazy(() => import('./pages/public/ConfirmationPage').th
 const ManagePage = lazy(() => import('./pages/public/ManagePage').then((module) => ({ default: module.ManagePage })))
 const SignInPage = lazy(() => import('./pages/ops/SignInPage').then((module) => ({ default: module.SignInPage })))
 const OpsOverviewPage = lazy(() => import('./pages/ops/OpsOverviewPage').then((module) => ({ default: module.OpsOverviewPage })))
+const PropertiesPage = lazy(() => import('./pages/ops/PropertiesPage').then((module) => ({ default: module.PropertiesPage })))
 const ReservationsPage = lazy(() => import('./pages/ops/ReservationsPage').then((module) => ({ default: module.ReservationsPage })))
 const ReservationDetailPage = lazy(() => import('./pages/ops/ReservationDetailPage').then((module) => ({ default: module.ReservationDetailPage })))
 const TimelinePage = lazy(() => import('./pages/ops/TimelinePage').then((module) => ({ default: module.TimelinePage })))
@@ -43,6 +44,7 @@ export function App() {
       <Route path="/ops" element={<AdminLayout />}>
         <Route index element={<Navigate to="overview" replace />} />
         <Route path="overview" element={<OpsOverviewPage />} />
+        <Route path="properties" element={<PropertiesPage />} />
         <Route path="reservations" element={<ReservationsPage />} />
         <Route path="reservations/:reservationId" element={<ReservationDetailPage />} />
         <Route path="timeline" element={<TimelinePage />} />

@@ -1165,7 +1165,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_owner: { Args: never; Returns: boolean }
+      manage_property: {
+        Args: {
+          p_address: string
+          p_area: string
+          p_check_in_time: string
+          p_check_out_time: string
+          p_contact_email?: string
+          p_contact_phone?: string
+          p_description_en: string
+          p_description_ka: string
+          p_id?: string
+          p_latitude?: number
+          p_longitude?: number
+          p_name_en: string
+          p_name_ka: string
+          p_policies_en?: string
+          p_policies_ka?: string
+          p_property_type: string
+          p_short_description_en: string
+          p_short_description_ka: string
+          p_slug: string
+          p_status: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
