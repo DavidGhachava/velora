@@ -8,14 +8,14 @@ import { SuccessNotice } from '../ui/Feedback'
 import { LocaleMenu } from './LocaleMenu'
 import { SeoManager } from './SeoManager'
 
-const links = [['Hotels & apartments', '/hotels'], ['Rooms', '/rooms'], ['Manage booking', '/manage/res-1001']] as const
+const links = [['Hotels & apartments', '/hotels'], ['Rooms', '/rooms'], ['Manage booking', '/manage']] as const
 
 export function PublicLayout() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
   const enclosed = location.pathname === '/booking'
-  const surfaceHeader = location.pathname.startsWith('/manage/') || location.pathname.startsWith('/booking/confirmation/')
+  const surfaceHeader = location.pathname.startsWith('/manage') || location.pathname.startsWith('/booking/confirmation/')
   const { notice, clearNotice } = useAppData()
   const { currency, t } = useLocale()
   const reduceMotion = useReducedMotion()
@@ -47,7 +47,7 @@ export function PublicLayout() {
           <NavLink to="/hotels" onClick={() => setOpen(false)}>{t('Hotels & apartments')}</NavLink>
           <NavLink to="/rooms" onClick={() => setOpen(false)}>{t('Rooms')}</NavLink>
           <NavLink to="/availability" onClick={() => setOpen(false)}>{t('Find a stay')}</NavLink>
-          <NavLink to="/manage/res-1001" onClick={() => setOpen(false)}>{t('Manage booking')}</NavLink>
+          <NavLink to="/manage" onClick={() => setOpen(false)}>{t('Manage booking')}</NavLink>
         </div>
         <div className="mobile-nav-bottom"><LocaleMenu inverted /><a href="mailto:stay@velorabatumi.example">{t('Guest support')}</a></div>
       </nav>
@@ -59,7 +59,7 @@ export function PublicLayout() {
       <div className="footer-intro"><Link to="/" className="brand brand--light"><span>V</span> VELORA</Link><p>{t('Hotels, apartments and rooms across Batumi.')}</p><div className="footer-location"><MapPin size={15} /> {t('Batumi, Georgia')}</div></div>
       <div className="footer-column"><p className="eyebrow">{t('Explore')}</p><Link to="/hotels">{t('Hotels & apartments')}</Link><Link to="/rooms">{t('Rooms')}</Link></div>
       <div className="footer-column"><p className="eyebrow">{t('Guest care')}</p><a href="mailto:stay@velorabatumi.example">{t('Email support')}</a><a href="tel:+995422000000">+995 422 00 00 00</a></div>
-      <div className="footer-column"><p className="eyebrow">{t('Your booking')}</p><Link to="/manage/res-1001">{t('Manage reservation')}</Link><Link to="/availability">{t('Check availability')}</Link></div>
+      <div className="footer-column"><p className="eyebrow">{t('Your booking')}</p><Link to="/manage">{t('Manage reservation')}</Link><Link to="/availability">{t('Check availability')}</Link></div>
       <div className="footer-cta"><div><span>{t('Ready to choose your dates?')}</span><strong>{t('Find your Batumi stay')}</strong></div><Link to="/availability" aria-label={t('Find a stay')}><ArrowRight /></Link></div>
       <div className="footer-bottom"><span>© 2026 Velora</span><span>{currency}</span></div>
     </footer>}

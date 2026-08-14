@@ -14,6 +14,7 @@ const SearchPage = lazy(() => import('./pages/public/SearchPage').then((module) 
 const CheckoutPage = lazy(() => import('./pages/public/CheckoutPage').then((module) => ({ default: module.CheckoutPage })))
 const ConfirmationPage = lazy(() => import('./pages/public/ConfirmationPage').then((module) => ({ default: module.ConfirmationPage })))
 const ManagePage = lazy(() => import('./pages/public/ManagePage').then((module) => ({ default: module.ManagePage })))
+const ManageLookupPage = lazy(() => import('./pages/public/ManageLookupPage').then((module) => ({ default: module.ManageLookupPage })))
 const SignInPage = lazy(() => import('./pages/ops/SignInPage').then((module) => ({ default: module.SignInPage })))
 const OpsOverviewPage = lazy(() => import('./pages/ops/OpsOverviewPage').then((module) => ({ default: module.OpsOverviewPage })))
 const PropertiesPage = lazy(() => import('./pages/ops/PropertiesPage').then((module) => ({ default: module.PropertiesPage })))
@@ -39,6 +40,7 @@ export function App() {
         <Route path="/availability" element={<SearchPage />} />
         <Route path="/booking" element={<CheckoutPage />} />
         <Route path="/booking/confirmation/:reservationId" element={<ConfirmationPage />} />
+        <Route path="/manage" element={<ManageLookupPage />} />
         <Route path="/manage/:reservationId" element={<ManagePage />} />
       </Route>
       <Route path="/ops/sign-in" element={<SignInPage />} />

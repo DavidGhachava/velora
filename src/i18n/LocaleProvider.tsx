@@ -434,6 +434,9 @@ const translations: Record<string, string> = {
   'We could not complete the booking.': 'დაჯავშნა ვერ დასრულდა.',
   'Could not save.': 'ცვლილებები ვერ შეინახა.',
   'Could not cancel.': 'ჯავშანი ვერ გაუქმდა.',
+  'Enter the confirmation number and email used for the reservation.': 'შეიყვანეთ ჯავშნის ნომერი და დაჯავშნისას გამოყენებული ელფოსტა.',
+  'Find reservation': 'ჯავშნის პოვნა',
+  'We could not find a reservation with those details.': 'მითითებული მონაცემებით ჯავშანი ვერ მოიძებნა.',
 }
 
 interface LocaleValue {

@@ -18,7 +18,7 @@ const routeMetadata = (path: string, language: 'en' | 'ka') => {
   if (path.startsWith('/rooms/')) return ['Room details — Velora Batumi', 'View room photos, included amenities, policies and complete booking prices.'] as const
   if (path === '/availability') return ['Available stays in Batumi — Velora', 'Check real availability and reserve a Batumi hotel room or apartment online.'] as const
   if (path === '/booking') return ['Secure booking — Velora Batumi', 'Complete guest details, extras and secure payment for your Batumi reservation.'] as const
-  if (path.startsWith('/manage/')) return ['Manage reservation — Velora Batumi', 'Review and manage your Velora Batumi reservation.'] as const
+  if (path.startsWith('/manage')) return ['Manage reservation — Velora Batumi', 'Review and manage your Velora Batumi reservation.'] as const
   return ['Velora Batumi', 'Book hotels, apartments and rooms in Batumi.'] as const
 }
 
