@@ -405,6 +405,50 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount_minor: number
+          captured_at: string | null
+          created_at: string
+          currency: string
+          id: string
+          provider: string
+          provider_reference: string
+          reservation_id: string
+          status: string
+        }
+        Insert: {
+          amount_minor: number
+          captured_at?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          provider: string
+          provider_reference: string
+          reservation_id: string
+          status: string
+        }
+        Update: {
+          amount_minor?: number
+          captured_at?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          provider?: string
+          provider_reference?: string
+          reservation_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       properties: {
         Row: {
           address: string
@@ -1168,6 +1212,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_direct_booking: {
+        Args: {
+          p_adults: number
+          p_check_in: string
+          p_check_out: string
+          p_children: number
+          p_email: string
+          p_first_name: string
+          p_last_name: string
+          p_locale: string
+          p_payment_reference: string
+          p_phone: string
+          p_room_type_id: string
+          p_special_requests: string
+        }
+        Returns: Json
+      }
       manage_property: {
         Args: {
           p_address: string
